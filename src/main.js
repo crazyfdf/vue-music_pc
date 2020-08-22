@@ -30,3 +30,14 @@ axios({
 }).then(res => {
   console.log(res);
 })
+axios.all([axios({
+  url: "http://123.207.32.32:8000/home/multidata",
+}), axios({
+  url: 'http://123.207.32.32:8000/home/data',
+  params: {
+    type: 'sell',
+    page: 5
+  }
+})]).then(results => {
+
+})
