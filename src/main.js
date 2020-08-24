@@ -56,11 +56,19 @@ new Vue({
 import {
   request
 } from './network/request'
-request({
-  url: '/home/multidata',
+// request({
+//   url: '/home/multidata',
 
-}, res => {
+// }, res => {
+//   console.log(res);
+// }, err => {
+//   console.log(err);
+// })
+
+request({
+  url: '/home/multidata'
+}).then(res => {
   console.log(res);
-}, err => {
+}).catch(err => {
   console.log(err);
 })

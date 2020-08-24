@@ -1,17 +1,43 @@
 import axios from 'axios'
 
-export function request(config, success, failure) {
+export function request(config) {
+	//1.创建axios的实例
 	const instance = axios.create({
 		baseURL: 'http://123.207.32.32:8000',
 		timeout: 5000
 	})
-	instance(config)
-		.then(res => {
-			// console.log(res);
-			success(res)
+	//2,axios的拦截器
+	instance.interceptors.request.use(config => {
+			console.log(config);
+			return config;
+		},
+		err => {
+			console.log(err);
 		})
-		.catch(err => {
-			// console.log(err);
-			failure(err)
+
+	//2.2响应拦截
+	instance.interceptors.response.use(res => {
+			console.log(res);
+			return res.data
+		},
+		err => {
+			console.log(err);
 		})
+	return instance(config)
 }
+
+// export function request(config, success, failure) {
+// 	const instance = axios.create({
+// 		baseURL: 'http://123.207.32.32:8000',
+// 		timeout: 5000
+// 	})
+// 	instance(config)
+// 		.then(res => {
+// 			// console.log(res);
+// 			success(res)
+// 		})
+// 		.catch(err => {
+// 			// console.log(err);
+// 			failure(err)
+// 		})
+// }
