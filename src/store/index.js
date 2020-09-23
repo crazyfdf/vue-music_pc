@@ -2,50 +2,62 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 
-import mutations from './mutations'
-import actions from './actions'
-import getters from './getters'
-import modulesA from './modules/modulesA'
 Vue.use(Vuex)
-
 const state = {
-	count: 1000,
-	students: [{
-			id: 110,
-			name: 'aaa',
-			age: 18
-		},
-		{
-			id: 111,
-			name: 'bbb',
-			age: 19
-		},
-		{
-			id: 112,
-			name: 'ccc',
-			age: 20
-		},
-		{
-			id: 113,
-			name: 'ddd',
-			age: 21
-		},
-	],
-	info: {
-
-		name: 'www',
-		age: 18,
-		height: 1.55
-	},
+  isLoading: false, //显示加载loading
+  isMusicList: false, //显示列表
+  isLogin: true, //是否登录
+  isPlay: false, //是否在播放
+  index: 0, //当前音乐序号
+  user: {}, //用户信息
+  userList: [], //用户收藏
+  audio: null, //播放器
+  playList: JSON.parse(localStorage.getItem('playList')) || [{ //当前的音乐列表
+    index: 0, //当前歌单顺序
+    id: 0, //用户id
+    name: "", //歌名
+    album: "", //专辑名
+    song: "", //用户名
+    picUrl: "", //用户头像
+    time: "00:00", //音乐时间
+    url: "", //歌曲地址
+  }],
+  playing: JSON.parse(localStorage.getItem('playing')) || { //当前播放的音乐
+    index: 0, //当前歌单顺序
+    id: 0, //用户id
+    name: "", //歌名
+    album: "", //专辑名
+    song: "", //用户名
+    picUrl: "", //用户头像
+    time: "00:00", //音乐时间
+    url: "", //歌曲地址
+  },
 }
 const store = new Vuex.Store({
-	state,
-	mutations,
-	actions,
-	getters,
-	modules: {
-		a: modulesA
-	}
+  state,
+  mutations: {
+    showLoading(state) {
+      state.isLoading = true;
+    },
+    hiddenLoading(state) {
+      state.isLoading = false;
+    },
+    showMusicList(state) {
+      state.isMusicList = true;
+    },
+    hiddenMusicList(state) {
+      state.isMusicList = false;
+    },
+    addPlayList(list, state) {
+      state.playList = list;
+    },
+    playMusic(state) {
+      state.isPlay = true
+      setTimeout(() => {
+        state.audio.play();
+      }, 0);
+    },
+  }
 })
 
 export default store

@@ -1,43 +1,44 @@
 import axios from 'axios'
+import $store from '@/store/index'
 
+let ajaxTimer = 0;
 export function request(config) {
-	//1.创建axios的实例
-	const instance = axios.create({
-		baseURL: 'http://123.207.32.32:8000',
-		timeout: 5000
-	})
-	//2,axios的拦截器
-	instance.interceptors.request.use(config => {
-			console.log(config);
-			return config;
-		},
-		err => {
-			console.log(err);
-		})
+  //1.创建axios的实例
+  $store.commit('showLoading')
+  const instance = axios.create({
+    baseURL: 'http://localhost:3000',
+    timeOut: 5000
+  })
+  //2,axios的拦截器
+  instance.interceptors.request.use(res => {
+      ajaxTimer++;
+      res.headers["Content-Type"] = "application/x-www-form-urlencoded"
+      return res;
+    },
+    err => {
+      console.log(err);
+      ajaxTimer--;
+      if (ajaxTimer === 0) {
+        $store.commit('hiddenLoading')
+      }
+    })
 
-	//2.2响应拦截
-	instance.interceptors.response.use(res => {
-			console.log(res);
-			return res.data
-		},
-		err => {
-			console.log(err);
-		})
-	return instance(config)
+  //2.2响应拦截
+  instance.interceptors.response.use(res => {
+      ajaxTimer--;
+      setTimeout(() => {
+        if (ajaxTimer === 0) {
+          $store.commit('hiddenLoading')
+        }
+      }, 1000);
+      return res.data
+    },
+    err => {
+      console.log(err);
+      ajaxTimer--;
+      if (ajaxTimer === 0) {
+        $store.commit('hiddenLoading')
+      }
+    })
+  return instance(config)
 }
-
-// export function request(config, success, failure) {
-// 	const instance = axios.create({
-// 		baseURL: 'http://123.207.32.32:8000',
-// 		timeout: 5000
-// 	})
-// 	instance(config)
-// 		.then(res => {
-// 			// console.log(res);
-// 			success(res)
-// 		})
-// 		.catch(err => {
-// 			// console.log(err);
-// 			failure(err)
-// 		})
-// }
